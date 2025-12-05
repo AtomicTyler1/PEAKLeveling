@@ -10,7 +10,11 @@ internal class UseItemPatches
 
     private static float CalculateExperience(Rarity itemRarity)
     {
-        float weight = LootData.RarityWeights[itemRarity];
+        float weight = 100;
+        if (LootData.RarityWeights.ContainsKey(itemRarity))
+        {
+            weight = LootData.RarityWeights[itemRarity];
+        }
 
         return 100 / weight * Mathf.Log10(weight);
     }
