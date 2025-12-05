@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Leveling.Awarders;
 
+[HarmonyPatch]
 internal class UseItemPatches
 {
     private const Rarity FallbackRarity = Rarity.Common;
@@ -37,7 +38,7 @@ internal class UseItemPatches
             return;
         }
 
-        if (TryGetItemRarity(__instance.gameObject, out Rarity itemRarity))
+        if (!TryGetItemRarity(__instance.gameObject, out Rarity itemRarity))
         {
             itemRarity = FallbackRarity;
         }
