@@ -1,12 +1,42 @@
 ﻿using HarmonyLib;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Leveling.Awarders;
+
+internal class TrackedItem
+{
+    Item item;
+    float lastTimeUsed;
+}
 
 [HarmonyPatch]
 internal class UseItemPatches
 {
     private const Rarity FallbackRarity = Rarity.Common;
+    private const float CooldownTime = 30f;
+
+    // Names in here will not gain experience when used
+    private static List<string> blacklistedItems = new List<string>
+    {
+        "Passport",
+        "Bing Bong",
+        "Binoculars",
+        "Torn Page",
+        "Scroll",
+        "Guidebook",
+        "Parasol"
+    };
+
+    // Names in here will have a 30s cooldown each time they are used between getting experience
+    private static List<string> trackedItemNames = new List<string>
+    {
+        "Faerie Lantern",
+        "Lantern",
+        "Torch"
+    };
+
+    private static readonly Dictionary<string, float> itemCooldowns = new Dictionary<string, float>();
 
     private static float CalculateExperience(Rarity itemRarity)
     {
@@ -37,9 +67,24 @@ internal class UseItemPatches
     [HarmonyPostfix]
     public static void OnPrimaryUse(Item __instance)
     {
-        if (!__instance.lastHolderCharacter.IsLocal || __instance.OnPrimaryFinishedCast == null)
+        string itemName = __instance.UIData.itemName;
+
+        if (!__instance.lastHolderCharacter.IsLocal || __instance.OnPrimaryFinishedCast == null || blacklistedItems.Contains(itemName))
         {
             return;
+        }
+
+        if (trackedItemNames.Contains(itemName))
+        {
+            float currentTime = Time.time;
+            if (itemCooldowns.TryGetValue(itemName, out float lastTimeUsed))
+            {
+                if (currentTime < lastTimeUsed + CooldownTime)
+                {
+                    return;
+                }
+            }
+            itemCooldowns[itemName] = currentTime;
         }
 
         if (!TryGetItemRarity(__instance.gameObject, out Rarity itemRarity))
@@ -61,16 +106,31 @@ internal class UseItemPatches
     [HarmonyPostfix]
     public static void OnSecondaryUse(Item __instance)
     {
-        if (!__instance.lastHolderCharacter.IsLocal || __instance.OnSecondaryFinishedCast == null)
+        string itemName = __instance.UIData.itemName;
+
+        if (!__instance.lastHolderCharacter.IsLocal || __instance.OnSecondaryFinishedCast == null || blacklistedItems.Contains(itemName))
         {
             return;
         }
 
-        if (TryGetItemRarity(__instance.gameObject, out Rarity itemRarity))
+        if (trackedItemNames.Contains(itemName))
         {
-            itemRarity = FallbackRarity;
+            float currentTime = Time.time;
+
+            if (itemCooldowns.TryGetValue(itemName, out float lastTimeUsed))
+            {
+                if (currentTime < lastTimeUsed + CooldownTime)
+                {
+                    return;
+                }
+            }
+
+            itemCooldowns[itemName] = currentTime;
         }
 
+        Rarity itemRarity = FallbackRarity;
+        TryGetItemRarity(__instance.gameObject, out itemRarity); 
+        
         float usesFactor = 1;
         if (__instance.totalUses > 0)
         {

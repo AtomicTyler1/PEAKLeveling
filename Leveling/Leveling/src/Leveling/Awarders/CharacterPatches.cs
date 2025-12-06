@@ -43,7 +43,7 @@ namespace Leveling.Awarders
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(Character), nameof(Character.Die))]
+        [HarmonyPatch(typeof(Character), nameof(Character.RPCA_Die))]
         static void Character_Die_Postfix(Character __instance)
         {
             if (__instance.IsLocal)
