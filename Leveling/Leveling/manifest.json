@@ -1,0 +1,9 @@
+{
+    "name": "Leveling",
+    "version_number": "0.1.2",
+    "website_url": "https://github.com/AtomicTyler1/PEAKLeveling/tree/master/Leveling/Leveling",
+    "description": "Adds further progression to PEAK!",
+    "dependencies": [
+        "BepInEx-BepInExPack_PEAK-5.4.75301"
+    ]
+}
