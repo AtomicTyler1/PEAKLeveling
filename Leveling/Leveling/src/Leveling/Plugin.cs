@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using pworld.Scripts;
 using UnityEngine.UI;
 using Leveling.Misc;
+using System;
+using Photon.Pun.Demo.PunBasics;
 
 namespace Leveling
 {
@@ -19,6 +21,8 @@ namespace Leveling
     {
         internal static ManualLogSource Log { get; private set; } = null!;
         private Harmony harmony = null!;
+
+        public static float XPGainedThisRun = 0f;
 
         private void Awake()
         {
@@ -36,14 +40,6 @@ namespace Leveling
 
             harmony = new Harmony(Id);
             harmony.PatchAll();
-        }
-
-        private void FixedUpdate()
-        {
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                LevelingAPI.AddExperience(50);
-            }
         }
 
         private void HandleRemotePlayerLevelChange(PhotonPlayer player, int newLevel)
@@ -107,7 +103,8 @@ namespace Leveling
             }
             else
             {
-                expText.text = $"+{xpGain} XP";
+                XPGainedThisRun += xpGain;
+                expText.text = $"+{Math.Round(xpGain, 2)} XP";
             }
 
             RectTransform rect = expTextObj.GetComponent<RectTransform>();
@@ -196,11 +193,11 @@ namespace Leveling
             GameObject levelUI = GameObject.Instantiate(peaks, peaks.transform.parent);
             levelUI.name = "Level";
             levelUI.transform.localPosition = peaks.transform.localPosition + new Vector3(0, -35, 0);
-            levelUI.GetComponent<TextMeshProUGUI>().text = $"Level: {LevelingAPI.Level}  XP: {LevelingAPI.Experience}/{LevelingAPI.Level * 100}";
+            levelUI.GetComponent<TextMeshProUGUI>().text = $"Level: {LevelingAPI.Level}  XP: {Math.Round(LevelingAPI.Experience, 2)}/{LevelingAPI.Level * 100}";
 
             LevelingAPI.OnLocalPlayerExperienceChanged += (newXP) =>
             {
-                levelUI.GetComponent<TextMeshProUGUI>().text = $"Level: {LevelingAPI.Level}  XP: {LevelingAPI.Experience}/{LevelingAPI.Level * 100}";
+                levelUI.GetComponent<TextMeshProUGUI>().text = $"Level: {LevelingAPI.Level}  XP: {Math.Round(LevelingAPI.Experience, 2)}/{LevelingAPI.Level * 100}";
             };
         }
 
@@ -236,6 +233,25 @@ namespace Leveling
                     };
                 }
             }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(RunManager), nameof(RunManager.StartRun))]
+        public static void RunManager_StartRun_Postfix()
+        {
+            Plugin.XPGainedThisRun = 0f;
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(EndScreen), nameof(EndScreen.Start))]
+        public static void EndScreen_Start_Postfix(EndScreen __instance)
+        {
+            Transform badges = __instance.transform.Find("Panel/Margin/Layout/Window_BADGES/Title (1)");
+            TextMeshProUGUI tmp = badges.gameObject.GetComponent<TextMeshProUGUI>();
+
+            if (tmp.text.Contains("(XP GAINED:")) { return; }
+
+            tmp.text = $"{tmp.text} (XP GAINED: +{Plugin.XPGainedThisRun})";
         }
     }
 }

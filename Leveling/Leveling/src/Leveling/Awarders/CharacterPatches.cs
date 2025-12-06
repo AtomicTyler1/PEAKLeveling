@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 namespace Leveling.Awarders
 {
@@ -38,18 +39,6 @@ namespace Leveling.Awarders
                 int xpAward = 10;
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for being fed.");
-            }
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(Character), nameof(Character.RPCEndGame))]
-        static void Character_RPCEndGame_Postfix(Character __instance)
-        {
-            if (__instance.IsLocal)
-            {
-                int xpAward = 500;
-                LevelingAPI.AddExperience(xpAward);
-                Plugin.Log.LogInfo($"Awarded {xpAward} XP for winning the game.");
             }
         }
 
@@ -88,7 +77,7 @@ namespace Leveling.Awarders
         [HarmonyPatch(typeof(Character), nameof(Character.OnStartClimb))]
         static void Character_OnStartClimb_Postfix(Character __instance)
         {
-            if (__instance.IsLocal)
+            if (__instance.IsLocal && SceneManager.GetActiveScene().name != "Airport")
             {
                 if (Time.time - climbSpamPreventionTime < 15f)
                 {

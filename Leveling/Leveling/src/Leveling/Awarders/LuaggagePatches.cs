@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using DG.Tweening.Core;
+using HarmonyLib;
 using UnityEngine;
 
 namespace Leveling.Awarders;
@@ -7,7 +8,7 @@ namespace Leveling.Awarders;
 class LuaggagePatches
 {
     private const float OpenLuggageExp = 15f;
-    private const float MinimumDistanceFromLuggage = 5f;
+    private const float MinimumDistanceFromLuggage = 7f;
 
     private static float LocalCharacterDistanceFrom(Vector3 position)
     {
@@ -23,6 +24,20 @@ class LuaggagePatches
             return;
         }
 
-        LevelingAPI.AddExperience(OpenLuggageExp);
+        switch (luggage.displayName)
+        {
+            case "Ancient Luggage":
+                LevelingAPI.AddExperience(OpenLuggageExp + 20);
+                return;
+            case "Explorer's Luggage":
+                LevelingAPI.AddExperience(OpenLuggageExp + 10);
+                return;
+            case "Big Luggage":
+                LevelingAPI.AddExperience(OpenLuggageExp + 5);
+                return;
+            default:
+                LevelingAPI.AddExperience(OpenLuggageExp);
+                return;
+        }
     }
 }
