@@ -93,6 +93,9 @@ namespace Leveling
             expText.alignment = TextAlignmentOptions.Center;
             expText.fontSize = heroTextComponent.fontSize / 2.5f;
 
+            expText.outlineWidth = 0.1f;
+            expText.outlineColor = heroTextComponent.color - new Color(0.5f, 0.5f, 0.5f, 0f);
+
             XPAnimator animator = expTextObj.AddComponent<XPAnimator>();
             animator.text = expText;
 
