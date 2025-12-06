@@ -8,6 +8,17 @@ namespace Leveling.Awarders;
 [HarmonyPatch]
 class GlobalEventsPatches
 {
+    private static float CalculateEscapeExperience()
+    {
+        int ascent = Ascents.currentAscent;
+        if (ascent < 0)
+        {
+            return 250f;
+        }
+
+        return 500f + ascent * 50f;
+    }
+
     [HarmonyPatch(typeof(GlobalEvents), nameof(GlobalEvents.TriggerRunEnded))]
     [HarmonyPostfix]
     public static void GlobalEvents_TriggerRunEnded()
@@ -16,13 +27,13 @@ class GlobalEventsPatches
 
         if (local.refs.stats.won)
         {
-            int xpAward = 500;
+            float xpAward = CalculateEscapeExperience();
             LevelingAPI.AddExperience(xpAward);
             Plugin.Log.LogInfo($"Awarded {xpAward} XP for winning the game.");
         }
         else if (local.refs.stats.somebodyElseWon)
         {
-            int xpAward = 50;
+            float xpAward = 50f;
             LevelingAPI.AddExperience(xpAward);
             Plugin.Log.LogInfo($"Awarded {xpAward} XP for teamate winning");
         }
