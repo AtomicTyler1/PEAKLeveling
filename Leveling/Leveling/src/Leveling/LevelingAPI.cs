@@ -68,7 +68,7 @@ namespace Leveling
                 return multiplier = 0.8f;
             }
 
-            return multiplier = 1 + (ascent * 0.2f);
+            return multiplier = 1 + (ascent * 0.1f);
         }
 
         /// <summary>

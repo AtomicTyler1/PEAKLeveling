@@ -26,6 +26,12 @@ This mod is in early release. Code may be subject to change and is being activel
 - Becoming a zombie (UNTESTED): **+100xp**
 - Lightning the campfire: **10xp-25xp**
 
+> Ascents give XP multipliers, they may soon be visualised in-game.
+> Tenderfoot: 0.8x
+> PEAK: 1x
+> Ascent 1: 1.1x
+> Ascent 2: 1.2x...
+
 # Contributors:
 
 <details>
@@ -34,7 +40,7 @@ This mod is in early release. Code may be subject to change and is being activel
 - Made the API and Plugin side
 - Created UI Code
 - Did most PUN related networking
-- Made changes to, or created some of the XP Gaining Systens
+- Made changes to, or created some of the XP Gaining Systems
 
 </details>
 
