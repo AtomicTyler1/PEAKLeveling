@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using PhotonPlayer = Photon.Realtime.Player;
 using System;
 using Leveling.Misc;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 namespace Leveling
 {
@@ -56,16 +58,33 @@ namespace Leveling
             }
         }
 
+        private static float CalculateMultiplier()
+        {
+            var ascent = Ascents.currentAscent;
+            var multiplier = 1f;
+
+            if (ascent < 0)
+            {
+                return multiplier = 0.8f;
+            }
+
+            return multiplier = 1 + (ascent * 0.2f);
+        }
+
         /// <summary>
         /// Adds the specified amount of experience points to the local player's current experience total.
         /// The amount is capped between 1 and 2000. This may trigger a level up if enough experience is gained.
         /// </summary>
         /// <param name="amount">The non-negative float value of experience to add.</param>
-        public static void AddExperience(float amount)
+        /// <param name="applyAscentMultiplier">Optional param that when set to false will not apply a multiplier depending on the ascent.</param>
+        public static void AddExperience(float amount, bool applyAscentMultiplier = true)
         {
-            if (amount > 0 && amount <= 2000)
+            if (amount > 0 && amount <= 2000 && SceneManager.GetActiveScene().name != "Airport")
             {
-                Experience += amount;
+                // Apply the multiplier if applyAscentMultiplier is true, else default to 1f.
+                var multiplier = applyAscentMultiplier ? CalculateMultiplier() : 1f;
+
+                Experience += amount * multiplier;
                 OnLocalPlayerExperienceChanged?.Invoke(amount);
                 Plugin.Log.LogInfo($"Gained {amount} XP. Current XP: {Experience}/{ExperienceToNextLevel}");
             }
