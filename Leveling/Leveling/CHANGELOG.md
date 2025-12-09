@@ -1,3 +1,9 @@
+# v0.1.4 - Bug fixes, Ascent multiplier UI, Icon change
+
+- This update contains a bug fix with the multiplier code giving the multiplied xp, but showing the user the unmultiplied code. This was an easy fix.
+- The boarding pass now displays the XP multiplier next to the name.
+- Another new icon!
+
 # v0.1.3 - API changes, Ascent multipliers and Airport immunity
 
 - If the current scene is the aiport, you can no longer gain xp.

@@ -1,6 +1,6 @@
 {
     "name": "Leveling",
-    "version_number": "0.1.3",
+    "version_number": "0.1.4",
     "website_url": "https://github.com/AtomicTyler1/PEAKLeveling/tree/master/Leveling/Leveling",
     "description": "Adds further progression to PEAK!",
     "dependencies": [

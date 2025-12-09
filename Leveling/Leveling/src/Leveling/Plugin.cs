@@ -256,5 +256,27 @@ namespace Leveling
 
             tmp.text = $"{tmp.text} (XP GAINED: +{Plugin.XPGainedThisRun})";
         }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(BoardingPass), nameof(BoardingPass.UpdateAscent))]
+        public static void BoardingPass_UpdateAscent_Postfix(BoardingPass __instance)
+        {
+            var ascent = __instance._ascentIndex;
+            var multiplier = 1f;
+
+            if (ascent < 0)
+            {
+                multiplier = 0.8f;
+            }
+            else
+            {
+                multiplier = 1 + (ascent * 0.1f);
+            }
+
+            GameObject ascent_title = __instance.transform.Find("BoardingPass/Panel/Ascent/Title").gameObject;
+            TextMeshProUGUI tmp = ascent_title.GetComponent<TextMeshProUGUI>();
+
+            tmp.text = $"{tmp.text} (XP: {multiplier}X)";
+        }
     }
 }

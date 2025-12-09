@@ -79,12 +79,13 @@ namespace Leveling
         /// <param name="applyAscentMultiplier">Optional param that when set to false will not apply a multiplier depending on the ascent.</param>
         public static void AddExperience(float amount, bool applyAscentMultiplier = true)
         {
-            if (amount > 0 && amount <= 2000 && SceneManager.GetActiveScene().name != "Airport")
+            if (amount > 0 && amount <= 2000 && SceneManager.GetActiveScene().name != "Airport" && SceneManager.GetActiveScene().name != "Title")
             {
                 // Apply the multiplier if applyAscentMultiplier is true, else default to 1f.
                 var multiplier = applyAscentMultiplier ? CalculateMultiplier() : 1f;
 
-                Experience += amount * multiplier;
+                amount = amount * multiplier;
+                Experience += amount;
                 OnLocalPlayerExperienceChanged?.Invoke(amount);
                 Plugin.Log.LogInfo($"Gained {amount} XP. Current XP: {Experience}/{ExperienceToNextLevel}");
             }
