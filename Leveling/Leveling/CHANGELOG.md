@@ -1,8 +1,25 @@
+# v0.1.5 - API Changes, XP Changes and more!
+
+- This update changes adds 2 new methods into the public api: `AddOneUseItem` and `SetOneUseItem`.
+- The BBNO$ bugle is now set as a one time use item, however the moral boost still gives XP.
+- Moral boost changed from 20XP -> 10XP
+- Internal API and saving changes for the new one time use system
+- Added a guide to the readme/description for backing up/deleting your data in the case of exploiters (if people want to do that).
+- Changed manifest description to include how the mod works (with an experience system).
+
+### Contributors for v0.1.5
+
+- @atomictyler ( Atomic ) - Made the whole update.
+
 # v0.1.4 - Bug fixes, Ascent multiplier UI, Icon change
 
 - This update contains a bug fix with the multiplier code giving the multiplied xp, but showing the user the unmultiplied code. This was an easy fix.
 - The boarding pass now displays the XP multiplier next to the name.
 - Another new icon!
+
+### Contributors for v0.1.4
+
+- @atomictyler ( Atomic ) - Made the code changes, additions and new icon.
 
 # v0.1.3 - API changes, Ascent multipliers and Airport immunity
 

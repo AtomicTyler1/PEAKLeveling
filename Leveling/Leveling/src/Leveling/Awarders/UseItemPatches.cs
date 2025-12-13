@@ -69,7 +69,9 @@ internal class UseItemPatches
     {
         string itemName = __instance.UIData.itemName;
 
-        if (!__instance.lastHolderCharacter.IsLocal || __instance.OnPrimaryFinishedCast == null || blacklistedItems.Contains(itemName))
+        var oneTimeUseItems = LevelingAPI.OneUseItems;
+
+        if (!__instance.lastHolderCharacter.IsLocal || __instance.OnPrimaryFinishedCast == null || blacklistedItems.Contains(itemName) || oneTimeUseItems.TryGetValue(itemName, out bool beenUsed) && beenUsed)
         {
             return;
         }
@@ -100,6 +102,8 @@ internal class UseItemPatches
 
         float expToGive = CalculateExperience(itemRarity) / usesFactor;
         LevelingAPI.AddExperience(expToGive);
+        // We can call this method even if the item is not one use as the method will just return if so.
+        LevelingAPI.SetOneUseItem(itemName);
     }
 
     [HarmonyPatch(typeof(Item), nameof(Item.FinishCastSecondary))]
@@ -108,7 +112,9 @@ internal class UseItemPatches
     {
         string itemName = __instance.UIData.itemName;
 
-        if (!__instance.lastHolderCharacter.IsLocal || __instance.OnSecondaryFinishedCast == null || blacklistedItems.Contains(itemName))
+        var oneTimeUseItems = LevelingAPI.OneUseItems;
+
+        if (!__instance.lastHolderCharacter.IsLocal || __instance.OnSecondaryFinishedCast == null || blacklistedItems.Contains(itemName) || oneTimeUseItems.TryGetValue(itemName, out bool beenUsed) && beenUsed)
         {
             return;
         }
@@ -139,5 +145,7 @@ internal class UseItemPatches
 
         float expToGive = CalculateExperience(itemRarity) / usesFactor;
         LevelingAPI.AddExperience(expToGive);
+        // We can call this method even if the item is not one use as the method will just return if so.
+        LevelingAPI.SetOneUseItem(itemName);
     }
 }

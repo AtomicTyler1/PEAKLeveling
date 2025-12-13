@@ -67,7 +67,7 @@ namespace Leveling.Awarders
 
                 lastMoraleBoostXPTime = Time.time;
 
-                int xpAward = 20;
+                int xpAward = 10;
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for morale boost.");
             }

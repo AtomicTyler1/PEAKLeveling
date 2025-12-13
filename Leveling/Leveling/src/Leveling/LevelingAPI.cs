@@ -17,6 +17,7 @@ namespace Leveling
 
         private static int _level = 1;
         private static float _experience = 0;
+        private static Dictionary<string, bool> _oneUseItems = new Dictionary<string, bool>();
 
         private static float ExperienceToNextLevel => _level * 100;
 
@@ -31,7 +32,7 @@ namespace Leveling
                 {
                     _level = value;
                     Netcode.Instance?.SendLevelUpdateRPC(value);
-                    SaveManager.SaveData(_level, _experience);
+                    SaveManager.SaveData(_level, _experience, _oneUseItems);
                     OnLocalPlayerLevelChanged?.Invoke(value);
                 }
             }
@@ -44,7 +45,17 @@ namespace Leveling
             {
                 _experience = value;
                 CheckLevelUp();
-                SaveManager.SaveData(_level, _experience);
+                SaveManager.SaveData(_level, _experience, _oneUseItems);
+            }
+        }
+
+        public static Dictionary<string, bool> OneUseItems
+        {
+            get => _oneUseItems;
+            private set
+            {
+                _oneUseItems = value;
+                SaveManager.SaveData(_level, _experience, _oneUseItems);
             }
         }
 
@@ -79,16 +90,44 @@ namespace Leveling
         /// <param name="applyAscentMultiplier">Optional param that when set to false will not apply a multiplier depending on the ascent.</param>
         public static void AddExperience(float amount, bool applyAscentMultiplier = true)
         {
-            if (amount > 0 && amount <= 2000 && SceneManager.GetActiveScene().name != "Airport" && SceneManager.GetActiveScene().name != "Title")
+            if (amount > 0 && amount <= 2000 && SceneManager.GetActiveScene().name.ToLower().Contains("level"))
             {
                 // Apply the multiplier if applyAscentMultiplier is true, else default to 1f.
                 var multiplier = applyAscentMultiplier ? CalculateMultiplier() : 1f;
 
-                amount = amount * multiplier;
+                amount *= multiplier;
                 Experience += amount;
                 OnLocalPlayerExperienceChanged?.Invoke(amount);
                 Plugin.Log.LogInfo($"Gained {amount} XP. Current XP: {Experience}/{ExperienceToNextLevel}");
             }
+        }
+
+        /// <summary>
+        /// Adds an item to the dictionary of one time use items.
+        /// </summary>
+        /// <param name="itemName">The item.UIData.itemName that will be checked for one time use.</param>
+        public static void AddOneUseItem(string itemName)
+        {
+            if (string.IsNullOrEmpty(itemName) || _oneUseItems.ContainsKey(itemName) ) { return; }
+
+            _oneUseItems.Add(itemName, false);
+
+            SaveManager.SaveData(_level, _experience, _oneUseItems);
+        }
+
+        /// <summary>
+        /// Sets an item as used for the One time use system.
+        /// </summary>
+        /// <param name="itemName">The item.UIData.itemName that will be set for one time use.</param>
+        public static void SetOneUseItem(string itemName)
+        {
+            if (string.IsNullOrEmpty(itemName) || !_oneUseItems.ContainsKey(itemName) || !SceneManager.GetActiveScene().name.ToLower().Contains("level")) { return; }
+
+            _oneUseItems[itemName] = true;
+
+            SaveManager.SaveData(_level, _experience, _oneUseItems);
+
+            Plugin.Log.LogMessage($"Set {itemName} to true for being a one use item.");
         }
 
         /// <summary>
@@ -100,6 +139,21 @@ namespace Leveling
         {
             _level = data.Level;
             _experience = data.Experience;
+            _oneUseItems = data.OneUseItems;
+
+            Dictionary<string, bool> defaultItems = SaveManager.GetDefaultOneUseItems();
+
+            foreach (var item in defaultItems)
+            {
+                if (!_oneUseItems.ContainsKey(item.Key))
+                {
+                    _oneUseItems.Add(item.Key, item.Value);
+                    Plugin.Log.LogMessage($"DefaultItems was missing {item}, this has now been added.");
+                }
+            }
+
+            SaveManager.SaveData(_level, _experience, _oneUseItems);
+
             Plugin.Log.LogInfo($"Local player stats initialized to Lvl: {_level}, Exp: {_experience}");
         }
 

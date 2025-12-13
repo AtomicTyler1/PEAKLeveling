@@ -20,17 +20,36 @@ This mod is in early release. Code may be subject to change and is being activel
 - Using an ancient statue: **+50xp**
 - Being revived: **+50xp**
 - Reviving someone: **+100xp**
-- Moral boost (with spam prevention): **+20xp**
+- Moral boost (with spam prevention): **+10xp**
 - You die: **+5xp**
 - Getting fed an item: **+10xp**
 - Becoming a zombie (UNTESTED): **+100xp**
 - Lightning the campfire: **10xp-25xp**
 
-> Ascents give XP multipliers, they may soon be visualised in-game.
+> Ascents give XP multipliers, these are also shown on the passport.
 > Tenderfoot: 0.8x
 > PEAK: 1x
 > Ascent 1: 1.1x
 > Ascent 2: 1.2x...
+
+# How to reset or backup your data
+
+Because the data is persistent across profiles, maybe you want to reset your level and experience because some exploiter found away to give you a lot of experience.
+
+Follow the steps below to restart your progress (Windows version):
+1. Hold the windows key and press R (Or type in run in the search bar)
+2. Copy this into the bar: `%appdata%\..\Local\LandCrab\PEAK\PEAKLeveling\`
+3. Delete `player_stats.sav`
+4. Re-open PEAK!
+
+> This can also be used to backup your save file which is recommended when playing with randoms!
+
+Follow the steps below to backup your progress (Windows version):
+1. Hold the windows key and press R (Or type in run in the search bar)
+2. Copy this into the bar: `%appdata%\..\Local\LandCrab\PEAK\PEAKLeveling\`
+3. Copy `player_stats.sav`
+5. Store the file wherever you want
+6. When you need to replace the file, do the same steps but paste instead of copy the file.
 
 # Contributors:
 
@@ -38,6 +57,7 @@ This mod is in early release. Code may be subject to change and is being activel
 <summary> @atomictyler ( Atomic ) </summary>
 
 - Made the API and Plugin side
+- Created the saving system
 - Created UI Code
 - Did most PUN related networking
 - Made changes to, or created some of the XP Gaining Systems

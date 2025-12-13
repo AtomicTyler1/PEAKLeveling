@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -10,17 +11,26 @@ namespace Leveling.Misc
     {
         public int Level { get; set; } = 1;
         public float Experience { get; set; } = 0;
+        public Dictionary<string, bool> OneUseItems { get; set; } = new Dictionary<string, bool>()
+        {
+            { "BUGLEBBNO", false }
+        };
     }
 
     public static class SaveManager
     {
 
-        // This system is setup to do the following, please do not change the functionality of this code unless you intend to break save compatibility:
+        // This system is setup to do the following, please do not change the functionality of this code unless you intend to break save compatibility or specifically put systems in place to fix it:
         // This is built to make it more difficult for users to manually edit their save files to cheat levels/experience without the use of external tools.
         // External tools include another mod, manually decoding, editing, and re-encoding the save file, and UnityExplorer.
 
         private static readonly byte[] MagicHeader = new byte[] { 0xFE, 0xCA, 0xDE, 0xAF, 0x01 };
         private static readonly byte[] MagicFooter = new byte[] { 0x02, 0xEF, 0xCD, 0xBA, 0xFD };
+
+        public static Dictionary<string, bool> GetDefaultOneUseItems()
+        {
+            return new Dictionary<string, bool>(new PlayerSaveData().OneUseItems);
+        }
 
         private static string SaveFilePath
         {
@@ -38,11 +48,11 @@ namespace Leveling.Misc
             }
         }
 
-        public static void SaveData(int level, float experience)
+        public static void SaveData(int level, float experience, Dictionary<string, bool> oneUseItems)
         {
             try
             {
-                var data = new PlayerSaveData { Level = level, Experience = experience };
+                var data = new PlayerSaveData { Level = level, Experience = experience, OneUseItems = oneUseItems};
 
                 string json = JsonConvert.SerializeObject(data);
 
