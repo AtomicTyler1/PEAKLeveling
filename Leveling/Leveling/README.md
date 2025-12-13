@@ -34,6 +34,16 @@ This mod is in early release. Code may be subject to change and is being activel
 
 # How to reset or backup your data
 
+### Using the config
+
+This mod now comes with a config to atomically backup your data!
+Launch the game at least once, then the config will generate.
+A dropdown should appear with the data of the backup for you to load.
+
+> It is recommended you still frequently manually backup your data.
+
+### Manually
+
 Because the data is persistent across profiles, maybe you want to reset your level and experience because some exploiter found away to give you a lot of experience.
 
 Follow the steps below to restart your progress (Windows version):

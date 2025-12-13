@@ -1,18 +1,16 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using Peak.Network;
-using UnityEngine;
-using Photon.Pun;
-using Photon.Realtime;
-using PhotonPlayer = Photon.Realtime.Player;
-using TMPro;
-using System.Collections.Generic;
-using pworld.Scripts;
-using UnityEngine.UI;
 using Leveling.Misc;
+using Photon.Pun;
 using System;
-using Photon.Pun.Demo.PunBasics;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using PhotonPlayer = Photon.Realtime.Player;
 
 namespace Leveling
 {
@@ -22,12 +20,51 @@ namespace Leveling
         internal static ManualLogSource Log { get; private set; } = null!;
         private Harmony harmony = null!;
 
+        public static ConfigEntry<bool> automaticBackups;
+        public static ConfigEntry<int> backupsBeforeDeletion;
+        public static ConfigEntry<string> backupToLoad;
+
         public static float XPGainedThisRun = 0f;
 
         private void Awake()
         {
             Log = Logger;
             Log.LogInfo($"Plugin {Name} is loaded!");
+
+            automaticBackups = Config.Bind("Backups", "Automatic Backups", true, "Creates backups of your save file automatically on game startup");
+            backupsBeforeDeletion = Config.Bind("Backups", "Backups Before Deletion", 6, "How many backups can be created before it starts deleting old backups.");
+
+            string[] backupLabels = SaveManager.GetBackupDataForConfig();
+
+            List<string> displayValues = new List<string> { "Current Save" };
+            displayValues.AddRange(backupLabels);
+
+            ConfigDescription configDesc = new ConfigDescription(
+                "Select a backup to load. The selection will replace your main save file on game start. Leave as 'Current Save' to skip loading a backup. Game restart is required after selection.",
+                new AcceptableValueList<string>(displayValues.ToArray())
+            );
+
+            backupToLoad = Config.Bind("Backups", "Backup To Load", "Current Save", configDesc);
+
+            if (automaticBackups.Value)
+            {
+                SaveManager.CreateBackup(backupsBeforeDeletion.Value);
+            }
+
+            string labelToLoad = backupToLoad.Value;
+
+            if (!labelToLoad.Equals("Current Save", StringComparison.OrdinalIgnoreCase))
+            {
+                string filenameToLoad = ParseLabelToFilename(labelToLoad);
+
+                Log.LogWarning($"Attempting to load selected backup (Label: {labelToLoad}, File: {filenameToLoad})");
+
+                if (SaveManager.LoadBackup(filenameToLoad))
+                {
+                    backupToLoad.Value = "Current Save";
+                    Config.Save();
+                }
+            }
 
             Netcode.EnsureInitialized();
 
@@ -40,6 +77,35 @@ namespace Leveling
 
             harmony = new Harmony(Id);
             harmony.PatchAll();
+        }
+
+        private string ParseLabelToFilename(string label)
+        {
+            try
+            {
+                int levelStart = label.IndexOf("Level: ") + "Level: ".Length;
+                int levelEnd = label.IndexOf(" Experience:");
+                string levelStr = label.Substring(levelStart, levelEnd - levelStart).Trim();
+
+                int expStart = label.IndexOf("Experience: ") + "Experience: ".Length;
+                string expStr = label.Substring(expStart).Trim();
+
+                if (!float.TryParse(expStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out float experience))
+                {
+                    Log.LogError($"Failed to parse experience string: {expStr}. Defaulting to Current Save.");
+                    return "Current Save";
+                }
+
+                int expInt = (int)Math.Floor(experience);
+                int expFrac = (int)((experience - expInt) * 1000);
+
+                return $"L{levelStr}_E{expInt}_{expFrac:D3}.backup";
+            }
+            catch (Exception ex)
+            {
+                Log.LogError($"Failed to parse backup label '{label}' into filename. Error: {ex.Message}");
+                return "Current Save";
+            }
         }
 
         private void HandleRemotePlayerLevelChange(PhotonPlayer player, int newLevel)

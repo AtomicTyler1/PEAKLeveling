@@ -1,3 +1,14 @@
+# v0.1.6 - Major Update, Automatic Backups
+
+- Now backup your data with ease!
+- Launch the game at least once to generate the config
+- Go the config section of your mod manager and you should see a dropdown to load a backup.
+- A backup is created each time you load the game, not as you quit, as the current save is that data.
+
+### Contributors for v0.1.6
+
+- @atomictyler ( Atomic ) - One bluescreen and lots of contemplating later, I made the update!
+
 # v0.1.5 - API Changes, XP Changes and more!
 
 - This update changes adds 2 new methods into the public api: `AddOneUseItem` and `SetOneUseItem`.
@@ -23,10 +34,10 @@
 
 # v0.1.3 - API changes, Ascent multipliers and Airport immunity
 
-- If the current scene is the aiport, you can no longer gain xp.
+- If the current scene is the airport, you can no longer gain xp.
 - Made changes internally about the API for the ascent multiplier.
 - Tenderfoot: 0.8x xp multiplier
-- Regualar PEAK: 1x xp multiplier
+- Regular PEAK: 1x xp multiplier
 - Ascent 1: 1.1x xp multiplier
 - And so on, adding .1x each time.
 
