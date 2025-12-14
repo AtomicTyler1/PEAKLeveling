@@ -1,3 +1,13 @@
+# v0.1.7 - Major bug fix
+
+- The last update had a last minute change that I didn't test (oops).
+- Save files should be perfectly intact, however ping @atomictyler if it was and I can send you a new save file with the desired level and xp.
+- Backups should now work. Existing backups will still also work.
+
+### Contributors for v0.1.7
+
+- @atomictyler ( Atomic ) - I fixed my own error :3
+
 # v0.1.6 - Major Update, Automatic Backups
 
 - Now backup your data with ease!

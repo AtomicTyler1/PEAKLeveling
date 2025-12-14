@@ -84,7 +84,17 @@ namespace Leveling
             try
             {
                 int levelStart = label.IndexOf("Level: ") + "Level: ".Length;
-                int levelEnd = label.IndexOf(" Experience:");
+                int levelEnd = label.IndexOf(" || Experience:");
+
+                if (levelEnd == -1)
+                    levelEnd = label.IndexOf(" Experience:");
+
+                if (levelStart < "Level: ".Length || levelEnd == -1 || levelEnd <= levelStart)
+                {
+                    Log.LogError($"Failed to find Level component in label: {label}");
+                    return "Current Save";
+                }
+
                 string levelStr = label.Substring(levelStart, levelEnd - levelStart).Trim();
 
                 int expStart = label.IndexOf("Experience: ") + "Experience: ".Length;
