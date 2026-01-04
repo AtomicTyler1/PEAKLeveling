@@ -32,7 +32,6 @@ namespace Leveling
                 {
                     _level = value;
                     Netcode.Instance?.SendLevelUpdateRPC(value);
-                    SaveManager.SaveData(_level, _experience, _oneUseItems);
                     OnLocalPlayerLevelChanged?.Invoke(value);
                 }
             }
@@ -45,7 +44,6 @@ namespace Leveling
             {
                 _experience = value;
                 CheckLevelUp();
-                SaveManager.SaveData(_level, _experience, _oneUseItems);
             }
         }
 
@@ -55,7 +53,6 @@ namespace Leveling
             private set
             {
                 _oneUseItems = value;
-                SaveManager.SaveData(_level, _experience, _oneUseItems);
             }
         }
 
@@ -80,6 +77,11 @@ namespace Leveling
             }
 
             return multiplier = 1 + (ascent * 0.1f);
+        }
+
+        public static void SaveLocalData()
+        {
+            SaveManager.SaveData(_level, _experience, _oneUseItems);
         }
 
         /// <summary>

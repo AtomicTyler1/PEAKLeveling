@@ -79,6 +79,11 @@ namespace Leveling
             harmony.PatchAll();
         }
 
+        private void OnApplicationQuit()
+        {
+            LevelingAPI.SaveLocalData();
+        }
+
         private string ParseLabelToFilename(string label)
         {
             try
