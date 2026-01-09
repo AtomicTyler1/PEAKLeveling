@@ -1,7 +1,21 @@
+# v0.1.8 - 2 Config values & Save fixes
+
+- Includes two configs
+    - Show Experience Gain
+   - Show Level Gain
+- The mod no longer saves to disk every time you gain XP, it instead saves on application close.
+- If you experience save loss (not saving when you exit the app) go to the discord thread and ping @atomictyler
+- An Autosave system may also come soon, however as long as it saves when you close the game this shouldn't be necessary.
+
+### Contributors for v0.1.8
+
+- @atomictyler ( Atomic ) - Made all code changes.
+- @kirsho ( Kirsho ) - Alerted me about saving each time xp is gained and why its so bad, also gave the method to use `OnApplicationQuit`.
+
 # v0.1.7 - Major bug fix
 
 - The last update had a last minute change that I didn't test (oops).
-- Save files should be perfectly intact, however ping @atomictyler if it was and I can send you a new save file with the desired level and xp.
+- Save files should be perfectly intact, however ping @atomictyler if it was and I can send you a new save file with the desired level and XP.
 - Backups should now work. Existing backups will still also work.
 
 ### Contributors for v0.1.7
@@ -21,7 +35,7 @@
 
 # v0.1.5 - API Changes, XP Changes and more!
 
-- This update changes adds 2 new methods into the public api: `AddOneUseItem` and `SetOneUseItem`.
+- This update changes adds 2 new methods into the public API: `AddOneUseItem` and `SetOneUseItem`.
 - The BBNO$ bugle is now set as a one time use item, however the moral boost still gives XP.
 - Moral boost changed from 20XP -> 10XP
 - Internal API and saving changes for the new one time use system
@@ -34,7 +48,7 @@
 
 # v0.1.4 - Bug fixes, Ascent multiplier UI, Icon change
 
-- This update contains a bug fix with the multiplier code giving the multiplied xp, but showing the user the unmultiplied code. This was an easy fix.
+- This update contains a bug fix with the multiplier code giving the multiplied XP, but showing the user the unmultiplied code. This was an easy fix.
 - The boarding pass now displays the XP multiplier next to the name.
 - Another new icon!
 
@@ -44,11 +58,11 @@
 
 # v0.1.3 - API changes, Ascent multipliers and Airport immunity
 
-- If the current scene is the airport, you can no longer gain xp.
+- If the current scene is the airport, you can no longer gain XP.
 - Made changes internally about the API for the ascent multiplier.
-- Tenderfoot: 0.8x xp multiplier
-- Regular PEAK: 1x xp multiplier
-- Ascent 1: 1.1x xp multiplier
+- Tenderfoot: 0.8x XP multiplier
+- Regular PEAK: 1x XP multiplier
+- Ascent 1: 1.1x XP multiplier
 - And so on, adding .1x each time.
 
 ### Contributors for v0.1.3
@@ -74,5 +88,5 @@
 
 - @atomictyler ( Atomic )
 - @kirsho ( Kirsho )
-> - @.chofo (" ✰ onlystar ) - They didnt contribute directly, but helped!
-> - @hamunii ( Hamunii ) - They didnt contribute directly, but helped!
+> - @.chofo (" ✰ onlystar ) - They didn't contribute directly, but helped!
+> - @hamunii ( Hamunii ) - They didn't contribute directly, but helped!

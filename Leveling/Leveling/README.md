@@ -9,7 +9,7 @@ This mod is in early release. Code may be subject to change and is being activel
 
 ## Ways of gaining experience
 
-- Winning a game: **+500xp**
+- Winning a game: **+500xp** (+50xp on top each ascent)
 - Dying, but someone else wins: **+50xp**
 - Using an item: Dynamic, but ranges from **8xp-3xp**
 - Opening Ancient Luggage: **+35xp**
@@ -41,6 +41,8 @@ Launch the game at least once, then the config will generate.
 A dropdown should appear with the data of the backup for you to load.
 
 > It is recommended you still frequently manually backup your data.
+
+You can also disable the UI that shows up on level and experience gain if you find that annoying.
 
 ### Manually
 

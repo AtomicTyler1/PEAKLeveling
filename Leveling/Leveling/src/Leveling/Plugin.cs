@@ -24,12 +24,19 @@ namespace Leveling
         public static ConfigEntry<int> backupsBeforeDeletion;
         public static ConfigEntry<string> backupToLoad;
 
+        public static ConfigEntry<bool> showExperienceGainUI;
+        public static ConfigEntry<bool> showLevelGainUI;
+        public static ConfigEntry<bool> showPlayerLevels;
+
         public static float XPGainedThisRun = 0f;
 
         private void Awake()
         {
             Log = Logger;
             Log.LogInfo($"Plugin {Name} is loaded!");
+
+            showExperienceGainUI = Config.Bind("UI", "Show Experience Gain", true, "When enabled, you will see when you gain XP, usually shown a +5XP");
+            showLevelGainUI = Config.Bind("UI", "Show Level Gain", true, "When enabled, you will see when you level up.");
 
             automaticBackups = Config.Bind("Backups", "Automatic Backups", true, "Creates backups of your save file automatically on game startup");
             backupsBeforeDeletion = Config.Bind("Backups", "Backups Before Deletion", 6, "How many backups can be created before it starts deleting old backups.");
@@ -134,12 +141,14 @@ namespace Leveling
 
         private void ExperienceGain(float newExp)
         {
+            if (!showExperienceGainUI.Value) { return; }
             Log.LogInfo($"Trying to create ui.");
             CreateExperienceGUI(newExp, out GameObject expTextObj, false);
         }
 
         private void LevelGain(int newLevel)
         {
+            if (!showLevelGainUI.Value) { return; }
             Log.LogInfo($"Trying to create ui.");
             CreateExperienceGUI(0, out GameObject expTextObj, true);
         }
@@ -199,7 +208,9 @@ namespace Leveling
 
             if (xpOrLevel)
             {
-                rect.anchoredPosition = new Vector2(100f, -10f);
+                // Check if we are displaying the XP, if not then we might as well center it.
+                if (showExperienceGainUI.Value) { rect.anchoredPosition = new Vector2(100f, -10f); }
+                else { rect.anchoredPosition = new Vector2(100f, 5f); }
             }
             else
             {
