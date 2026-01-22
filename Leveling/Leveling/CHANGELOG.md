@@ -1,3 +1,8 @@
+# v0.1.9 - Bug fix & false anti-cheat accusations
+
+- Fixed a bug where you would leak memory over time, this should be fixed. If levelling UI goes missing, ping @atomictyler
+- Anti-Cheats like PEAKER would accuse you of name spoofing, this should be fixed, if you still get accused of name spoofing by an anti cheat, ping @atomictyler in the leveling thread.
+
 # v0.1.8 - 2 Config values & Save fixes
 
 - Includes two configs

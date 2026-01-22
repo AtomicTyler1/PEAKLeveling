@@ -141,6 +141,7 @@ namespace Leveling
 
         private void ExperienceGain(float newExp)
         {
+            Patches.UpdateAccoladesText();
             if (!showExperienceGainUI.Value) { return; }
             Log.LogInfo($"Trying to create ui.");
             CreateExperienceGUI(newExp, out GameObject expTextObj, false);
@@ -148,6 +149,7 @@ namespace Leveling
 
         private void LevelGain(int newLevel)
         {
+            Patches.UpdateAccoladesText();
             if (!showLevelGainUI.Value) { return; }
             Log.LogInfo($"Trying to create ui.");
             CreateExperienceGUI(0, out GameObject expTextObj, true);
@@ -224,6 +226,8 @@ namespace Leveling
     [HarmonyPatch]
     public class Patches
     {
+        private static TextMeshProUGUI? localLevelUIText;
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerHandler), nameof(PlayerHandler.RegisterCharacter))]
         public static void Character_Reg_Postfix(Character character)
@@ -231,30 +235,11 @@ namespace Leveling
             if (character && character.photonView)
             {
                 PhotonPlayer networkPlayer = character.photonView.Owner;
-
-                if (networkPlayer != null)
+                if (networkPlayer != null && networkPlayer.IsLocal)
                 {
                     int playerLevel = LevelingAPI.GetPlayerLevel(networkPlayer);
-
-                    string baseName = RemoveLevelTag(networkPlayer.NickName);
-
-                    if (networkPlayer.IsLocal)
-                    {
-                        Netcode.Instance?.SendLevelUpdateRPC(playerLevel);
-                        Netcode.Instance?.RequestAllPlayerLevels();
-
-                        foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
-                        {
-                            if (player.IsLocal) continue;
-
-                            int remotePlayerLevel = LevelingAPI.GetPlayerLevel(player);
-                            string remoteBaseName = RemoveLevelTag(player.NickName);
-                            player.NickName = $"{remoteBaseName} [{remotePlayerLevel}]";
-                        }
-
-                        Plugin.Log.LogInfo($"Character Registered (Local): {networkPlayer.NickName} is Lvl {playerLevel}. Broadcasting and Requesting Sync.");
-                        return;
-                    }
+                    Netcode.Instance?.SendLevelUpdateRPC(playerLevel);
+                    Netcode.Instance?.RequestAllPlayerLevels();
                 }
             }
         }
@@ -276,24 +261,30 @@ namespace Leveling
         public static void Accolades_OnPageEnter_Postfix(PauseMenuAccoladesPage __instance)
         {
             GameObject obj = __instance.gameObject;
+            Transform existingLevel = obj.transform.Find("Level");
 
-            if (obj.transform.Find("Level"))
+            if (existingLevel != null)
             {
-                obj.transform.Find("Level").GetComponent<TextMeshProUGUI>().text = $"Level: {LevelingAPI.Level}  XP: {LevelingAPI.Experience}/{LevelingAPI.Level * 100}";
-                return;
+                localLevelUIText = existingLevel.GetComponent<TextMeshProUGUI>();
+            }
+            else
+            {
+                GameObject peaks = obj.transform.Find("Peaks").gameObject;
+                GameObject levelUI = GameObject.Instantiate(peaks, peaks.transform.parent);
+                levelUI.name = "Level";
+                levelUI.transform.localPosition = peaks.transform.localPosition + new Vector3(0, -35, 0);
+                localLevelUIText = levelUI.GetComponent<TextMeshProUGUI>();
             }
 
-            GameObject peaks = obj.transform.Find("Peaks").gameObject;
+            UpdateAccoladesText();
+        }
 
-            GameObject levelUI = GameObject.Instantiate(peaks, peaks.transform.parent);
-            levelUI.name = "Level";
-            levelUI.transform.localPosition = peaks.transform.localPosition + new Vector3(0, -35, 0);
-            levelUI.GetComponent<TextMeshProUGUI>().text = $"Level: {LevelingAPI.Level}  XP: {Math.Round(LevelingAPI.Experience, 2)}/{LevelingAPI.Level * 100}";
-
-            LevelingAPI.OnLocalPlayerExperienceChanged += (newXP) =>
+        public static void UpdateAccoladesText()
+        {
+            if (localLevelUIText != null && localLevelUIText.gameObject != null)
             {
-                levelUI.GetComponent<TextMeshProUGUI>().text = $"Level: {LevelingAPI.Level}  XP: {Math.Round(LevelingAPI.Experience, 2)}/{LevelingAPI.Level * 100}";
-            };
+                localLevelUIText.text = $"Level: {LevelingAPI.Level}  XP: {Math.Round(LevelingAPI.Experience, 2)}/{LevelingAPI.Level * 100}";
+            }
         }
 
         [HarmonyPostfix]
@@ -302,31 +293,15 @@ namespace Leveling
         {
             foreach (PlayerName name in __instance.playerNameText)
             {
-                var text = name.text;
+                if (name.text == null || name.characterInteractable?.character?.photonView == null) continue;
 
-                if (text != null &&
-                    name.characterInteractable != null &&
-                    name.characterInteractable.character != null &&
-                    name.characterInteractable.character.photonView != null)
-                {
-                    PhotonPlayer player = name.characterInteractable.character.photonView.Owner;
+                PhotonPlayer player = name.characterInteractable.character.photonView.Owner;
 
-                    int playerLevel = LevelingAPI.GetPlayerLevel(player);
-                    string baseName = RemoveLevelTag(player.NickName);
+                if (player == null || player.IsLocal) continue;
 
-                    text.text = $"{baseName} [{playerLevel}]";
-
-                    LevelingAPI.OnRemotePlayerLevelChanged += (changedPlayer, newLevel) =>
-                    {
-                        if (text == null) return;
-
-                        if (changedPlayer == player)
-                        {
-                            string updatedBaseName = RemoveLevelTag(changedPlayer.NickName);
-                            text.text = $"{updatedBaseName} [{newLevel}]";
-                        }
-                    };
-                }
+                int playerLevel = LevelingAPI.GetPlayerLevel(player);
+                string baseName = RemoveLevelTag(player.NickName);
+                name.text.text = $"{baseName} [{playerLevel}]";
             }
         }
 
