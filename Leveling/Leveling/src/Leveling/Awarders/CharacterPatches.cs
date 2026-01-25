@@ -24,7 +24,7 @@ namespace Leveling.Awarders
         {
             if (__instance.IsLocal)
             {
-                int xpAward = 100;
+                int xpAward = 50;
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for zombifying.");
             }
@@ -105,13 +105,13 @@ namespace Leveling.Awarders
         {
             if (__instance.IsLocal)
             {
-                int xpAward = 50;
+                int xpAward = 25;
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for being revived.");
             }
             else
             {
-                int xpAward = 100;
+                int xpAward = 50;
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for reviving someone.");
             }

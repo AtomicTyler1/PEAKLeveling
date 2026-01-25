@@ -26,7 +26,8 @@ namespace Leveling
 
         public static ConfigEntry<bool> showExperienceGainUI;
         public static ConfigEntry<bool> showLevelGainUI;
-        public static ConfigEntry<bool> showPlayerLevels;
+        public static ConfigEntry<bool> showAscentMultiplier;
+        public static ConfigEntry<bool> showLevelingUsersOnly;
 
         public static float XPGainedThisRun = 0f;
 
@@ -37,6 +38,8 @@ namespace Leveling
 
             showExperienceGainUI = Config.Bind("UI", "Show Experience Gain", true, "When enabled, you will see when you gain XP, usually shown a +5XP");
             showLevelGainUI = Config.Bind("UI", "Show Level Gain", true, "When enabled, you will see when you level up.");
+            showAscentMultiplier = Config.Bind("UI", "Show Ascent Multiplier", true, "When enabled, the ascent multiplier will be shown on the boarding pass screen. Turn it off if incompatible with localization or other mods change it.");
+            showLevelingUsersOnly = Config.Bind("UI", "Show Leveling Users Only", false, "When enabled, only players using the leveling mod will have their levels shown, if off then everyone without the mod will have [1]. REQUIRES REJOIN");
 
             automaticBackups = Config.Bind("Backups", "Automatic Backups", true, "Creates backups of your save file automatically on game startup");
             backupsBeforeDeletion = Config.Bind("Backups", "Backups Before Deletion", 6, "How many backups can be created before it starts deleting old backups.");
@@ -133,7 +136,8 @@ namespace Leveling
         private void HandleRemotePlayerLevelChange(PhotonPlayer player, int newLevel)
         {
             if (player == null || player.IsLocal) return;
-
+            Patches.UpdateAudioSliderText(player, newLevel);
+            Patches.UpdatePlayerNameText(player, newLevel);
             string baseName = Patches.RemoveLevelTag(player.NickName);
             player.NickName = $"{baseName} [{newLevel}]";
             Log.LogInfo($"Updated remote player name: {player.NickName}");
@@ -150,6 +154,7 @@ namespace Leveling
         private void LevelGain(int newLevel)
         {
             Patches.UpdateAccoladesText();
+
             if (!showLevelGainUI.Value) { return; }
             Log.LogInfo($"Trying to create ui.");
             CreateExperienceGUI(0, out GameObject expTextObj, true);
@@ -227,6 +232,8 @@ namespace Leveling
     public class Patches
     {
         private static TextMeshProUGUI? localLevelUIText;
+        private static Dictionary<int, PlayerName> playerNames = new Dictionary<int, PlayerName>();
+        private static Dictionary<int, TextMeshProUGUI> audioLevelSliderNames = new Dictionary<int, TextMeshProUGUI>();
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerHandler), nameof(PlayerHandler.RegisterCharacter))]
@@ -287,6 +294,47 @@ namespace Leveling
             }
         }
 
+        public static void UpdateAudioSliderText(PhotonPlayer player, int level)
+        {
+            if (audioLevelSliderNames != null && audioLevelSliderNames.ContainsKey(player.ActorNumber))
+            {
+                TextMeshProUGUI tmp = audioLevelSliderNames[player.ActorNumber];
+                string baseName = RemoveLevelTag(player.NickName);
+                tmp.text = $"{baseName} [{level}]";
+            }
+            else
+            {
+                Plugin.Log.LogWarning($"Could not find AudioLevelSlider Text for player {player.NickName} to update level display.");
+            }
+        }
+
+        public static void UpdatePlayerNameText(PhotonPlayer player, int level)
+        {
+            if (playerNames.TryGetValue(player.ActorNumber, out PlayerName name) && name != null && name.text != null)
+            {
+                string baseName = RemoveLevelTag(player.NickName);
+                name.text.text = $"{baseName} [{level}]";
+                return;
+            }
+
+            UIPlayerNames uiNames = GameObject.FindFirstObjectByType<UIPlayerNames>();
+            if (uiNames != null)
+            {
+                foreach (PlayerName playerNameComp in uiNames.playerNameText)
+                {
+                    if (playerNameComp.text == null || playerNameComp.characterInteractable?.character?.photonView == null) continue;
+
+                    PhotonPlayer owner = playerNameComp.characterInteractable.character.photonView.Owner;
+                    playerNames[owner.ActorNumber] = playerNameComp;
+                    if (owner == player)
+                    {
+                        string baseName = RemoveLevelTag(player.NickName);
+                        playerNameComp.text.text = $"{baseName} [{level}]";
+                    }
+                }
+            }
+        }
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(UIPlayerNames), nameof(UIPlayerNames.Init))]
         public static void UIPlayerNames_Init_Postfix(UIPlayerNames __instance)
@@ -299,9 +347,21 @@ namespace Leveling
 
                 if (player == null || player.IsLocal) continue;
 
-                int playerLevel = LevelingAPI.GetPlayerLevel(player);
-                string baseName = RemoveLevelTag(player.NickName);
-                name.text.text = $"{baseName} [{playerLevel}]";
+                if (!playerNames.ContainsKey(player.ActorNumber))
+                {
+                    playerNames.Add(player.ActorNumber, name);
+                }
+                else
+                {
+                    playerNames[player.ActorNumber] = name;
+                }
+
+                if (!Plugin.showLevelingUsersOnly.Value)
+                {
+                    int playerLevel = LevelingAPI.GetPlayerLevel(player);
+                    string baseName = RemoveLevelTag(player.NickName);
+                    name.text.text = $"{baseName} [{playerLevel}]";
+                }
             }
         }
 
@@ -309,6 +369,8 @@ namespace Leveling
         [HarmonyPatch(typeof(RunManager), nameof(RunManager.StartRun))]
         public static void RunManager_StartRun_Postfix()
         {
+            audioLevelSliderNames.Clear();
+            playerNames.Clear();
             Plugin.XPGainedThisRun = 0f;
         }
 
@@ -319,15 +381,17 @@ namespace Leveling
             Transform badges = __instance.transform.Find("Panel/Margin/Layout/Window_BADGES/Title (1)");
             TextMeshProUGUI tmp = badges.gameObject.GetComponent<TextMeshProUGUI>();
 
-            if (tmp.text.Contains("(XP GAINED:")) { return; }
+            if (tmp.text.Contains("(+")) { return; }
 
-            tmp.text = $"{tmp.text} (XP GAINED: +{Plugin.XPGainedThisRun})";
+            tmp.text = $"{tmp.text} (+{Plugin.XPGainedThisRun}XP) (LEVEL {LevelingAPI.Level})";
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(BoardingPass), nameof(BoardingPass.UpdateAscent))]
         public static void BoardingPass_UpdateAscent_Postfix(BoardingPass __instance)
         {
+            if (!Plugin.showAscentMultiplier.Value) { return; }
+
             var ascent = __instance._ascentIndex;
             var multiplier = 1f;
 
@@ -344,6 +408,26 @@ namespace Leveling
             TextMeshProUGUI tmp = ascent_title.GetComponent<TextMeshProUGUI>();
 
             tmp.text = $"{tmp.text} (XP: {multiplier}X)";
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AudioLevelSlider), nameof(AudioLevelSlider.Awake))]
+        public static void AudioLevelSlider_ShowLevel(AudioLevelSlider __instance)
+        {
+            PhotonPlayer photonPlayer = __instance.player;
+            int level = LevelingAPI.GetPlayerLevel(photonPlayer);
+
+            GameObject name = __instance.transform.Find("Name").gameObject;
+            TextMeshProUGUI tmp = name.GetComponent<TextMeshProUGUI>();
+
+            if (!audioLevelSliderNames.ContainsKey(photonPlayer.ActorNumber))
+            {
+                audioLevelSliderNames.Add(photonPlayer.ActorNumber, tmp);
+            }
+            else
+            {
+                audioLevelSliderNames[photonPlayer.ActorNumber] = tmp;
+            }
         }
     }
 }

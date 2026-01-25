@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>com.atomic.leveling</AssemblyName>
     <AssemblyTitle>Leveling</AssemblyTitle>
-    <Version>0.1.9</Version>
+    <Version>0.2.0</Version>
     <UserSecretsId>7f6b98c3-66e0-4daf-8fab-744bf523d6af</UserSecretsId>
   </PropertyGroup>
 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using PhotonPlayer = Photon.Realtime.Player;
 using System;
 using Leveling.Misc;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 namespace Leveling
@@ -76,7 +75,7 @@ namespace Leveling
                 return multiplier = 0.8f;
             }
 
-            return multiplier = 1 + (ascent * 0.1f);
+            return multiplier = Math.Clamp((1 + (ascent * 0.1f)), 1, 2);
         }
 
         public static void SaveLocalData()

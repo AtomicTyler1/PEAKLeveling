@@ -1,7 +1,15 @@
+# v0.2.0 - New configs, bug fixed and UI changes
+
+- The end of scout report should now be changes, the timeline title shows XP gained and your level now. It looks something like `TIMELINE (+1361.25XP) (LEVEL 42)`
+- I'm currently unsure if other players levels still don't show up in the end of game scout report.
+- 2 New configs!
+    - Show Ascent Multiplier (True): When false, the text that says the ascent multiplier will disappear, good if localization messed up or you have a mod that breaks this feature
+   - Show Leveling Users Only (False): When false, people without the mod will be shown as level [1]. If true, they will just have their default name.
+
 # v0.1.9 - Bug fix & false anti-cheat accusations
 
 - Fixed a bug where you would leak memory over time, this should be fixed. If levelling UI goes missing, ping @atomictyler
-- Anti-Cheats like PEAKER would accuse you of name spoofing, this should be fixed, if you still get accused of name spoofing by an anti cheat, ping @atomictyler in the leveling thread.
+- Anti-Cheats like PEAKER would accuse others of name spoofing, this should be fixed, if others still get accused of name spoofing by an anti cheat, ping @atomictyler in the leveling thread.
 
 # v0.1.8 - 2 Config values & Save fixes
 

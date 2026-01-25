@@ -18,12 +18,12 @@ This mod is in early release. Code may be subject to change and is being activel
 - Opening Regular Luggage: **+15xp**
 - 1 in 20 chance whilst climbing every 15s: **+15xp**
 - Using an ancient statue: **+50xp**
-- Being revived: **+50xp**
-- Reviving someone: **+100xp**
+- Being revived: **+25xp**
+- Reviving someone: **+50xp**
 - Moral boost (with spam prevention): **+10xp**
 - You die: **+5xp**
 - Getting fed an item: **+10xp**
-- Becoming a zombie (UNTESTED): **+100xp**
+- Becoming a zombie (UNTESTED): **+50xp**
 - Lightning the campfire: **10xp-25xp**
 
 > Ascents give XP multipliers, these are also shown on the passport.
