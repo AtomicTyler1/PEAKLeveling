@@ -89,10 +89,14 @@ namespace Leveling
         /// </summary>
         /// <param name="amount">The non-negative float value of experience to add.</param>
         /// <param name="applyAscentMultiplier">Optional param that when set to false will not apply a multiplier depending on the ascent.</param>
-        public static void AddExperience(float amount, bool applyAscentMultiplier = true)
+        /// <param name="allowAwardInAirport">Optional param that lets people gain Experience whilst in the airport.</param>
+        public static void AddExperience(float amount, bool applyAscentMultiplier = true, bool allowAwardInAirport = false)
         {
-            if (amount > 0 && amount <= 2000 && SceneManager.GetActiveScene().name.ToLower().Contains("level"))
+            if (amount > 0 && amount <= 2000)
             {
+                if (SceneManager.GetActiveScene().name.ToLower().Contains("airport") && !allowAwardInAirport) return;
+                if (!SceneManager.GetActiveScene().name.ToLower().Contains("level") && !allowAwardInAirport) return;
+
                 // Apply the multiplier if applyAscentMultiplier is true, else default to 1f.
                 var multiplier = applyAscentMultiplier ? CalculateMultiplier() : 1f;
 

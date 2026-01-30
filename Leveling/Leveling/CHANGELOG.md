@@ -1,3 +1,14 @@
+# v0.2.1 - Slight API Change for developers
+
+- The sPEAKer dev has request the addition of gaining experience in the airport as some features are only obtained there.
+- Mod developers can now add another bool to `AddExperience` that will alward the experience in the airport.
+- No integrated XP gaining systems will give you XP in the airport, only external mods will.
+
+### Contributors for v0.2.1
+
+- @atomictyler ( Atomic ) - Made the changes to the API
+- @.chofo (" ✰ onlystar ) - sPEAKer dev that requested the change
+
 # v0.2.0 - New configs, bug fixed and UI changes
 
 - The end of scout report should now be changes, the timeline title shows XP gained and your level now. It looks something like `TIMELINE (+1361.25XP) (LEVEL 42)`
