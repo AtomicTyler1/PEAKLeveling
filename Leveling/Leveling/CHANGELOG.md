@@ -1,3 +1,8 @@
+# v0.2.4 - Bug fix
+
+- (Hopefully) Fixed a bug where the mods section would still show despite it being +0XP
+- (Hopefully) Fixed a bug where text would wrap onto a new line breaking the looks of the new UI.
+
 # v0.2.3 - Bug fix
 
 - When playing on ascent 1 and higher, the `MODS` sections would appear and give you some XP.

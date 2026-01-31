@@ -508,7 +508,7 @@ namespace Leveling
 
         private static void CreateEndScreenSection(EndScreen __instance, string name, float value)
         {
-            if (value <= 0) { return; }
+            if (value < 1) { return; }
 
             var margin = __instance.transform.Find("Panel/Margin");
             var titleRef = margin.Find("Leveling_Title");
@@ -545,6 +545,8 @@ namespace Leveling
                 tmp.alignment = align;
                 tmp.color = themeColor;
                 tmp.enableAutoSizing = false;
+
+                tmp.textWrappingMode = TextWrappingModes.NoWrap;
 
                 RectTransform rect = obj.GetComponent<RectTransform>();
                 rect.sizeDelta = new Vector2(rowWidth / 2f, 20f);
