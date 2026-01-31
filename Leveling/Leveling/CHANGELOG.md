@@ -1,3 +1,9 @@
+# v0.2.3 - Bug fix
+
+- When playing on ascent 1 and higher, the `MODS` sections would appear and give you some XP.
+- This `MODS` section was actually the amount the ascent multiplier gave you.
+- This has been fixed to include teh ascent multiplier directly in each of the values.
+
 # v0.2.2 - Major UI addition
 
 - The end of scout report now shows even more details on how you gained the XP!

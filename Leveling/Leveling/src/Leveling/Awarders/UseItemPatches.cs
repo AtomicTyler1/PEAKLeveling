@@ -101,7 +101,7 @@ internal class UseItemPatches
         }
 
         float expToGive = CalculateExperience(itemRarity) / usesFactor;
-        Plugin.XPGained_Items += expToGive;
+        Plugin.IncreaseXPSource(Plugin.XPSource.Items, expToGive);
         LevelingAPI.AddExperience(expToGive);
         // We can call this method even if the item is not one use as the method will just return if so.
         LevelingAPI.SetOneUseItem(itemName);
@@ -145,7 +145,7 @@ internal class UseItemPatches
         }
 
         float expToGive = CalculateExperience(itemRarity) / usesFactor;
-        Plugin.XPGained_Items += expToGive;
+        Plugin.IncreaseXPSource(Plugin.XPSource.Items, expToGive);
         LevelingAPI.AddExperience(expToGive);
         // We can call this method even if the item is not one use as the method will just return if so.
         LevelingAPI.SetOneUseItem(itemName);

@@ -25,7 +25,7 @@ namespace Leveling.Awarders
             if (__instance.IsLocal)
             {
                 int xpAward = 50;
-                Plugin.XPGained_Other += xpAward;
+                Plugin.IncreaseXPSource(Plugin.XPSource.Other, xpAward);
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for zombifying.");
             }
@@ -38,7 +38,7 @@ namespace Leveling.Awarders
             if (__instance.IsLocal)
             {
                 int xpAward = 10;
-                Plugin.XPGained_Items += xpAward;
+                Plugin.IncreaseXPSource(Plugin.XPSource.Other, xpAward);
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for being fed.");
             }
@@ -51,7 +51,7 @@ namespace Leveling.Awarders
             if (__instance.IsLocal)
             {
                 int xpAward = 5;
-                Plugin.XPGained_Other += xpAward;
+                Plugin.IncreaseXPSource(Plugin.XPSource.Other, xpAward);
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for dying.");
             }
@@ -71,7 +71,7 @@ namespace Leveling.Awarders
                 lastMoraleBoostXPTime = Time.time;
 
                 int xpAward = 10;
-                Plugin.XPGained_Other += xpAward;
+                Plugin.IncreaseXPSource(Plugin.XPSource.Other, xpAward);
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for morale boost.");
             }
@@ -98,7 +98,7 @@ namespace Leveling.Awarders
                 climbSpamPreventionTime = Time.time;
 
                 int xpAward = 15;
-                Plugin.XPGained_Climbing += xpAward;
+                Plugin.IncreaseXPSource(Plugin.XPSource.Climbing, xpAward);
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for climbing.");
             }
@@ -111,14 +111,14 @@ namespace Leveling.Awarders
             if (__instance.IsLocal)
             {
                 int xpAward = 25;
-                Plugin.XPGained_Other += xpAward;
+                Plugin.IncreaseXPSource(Plugin.XPSource.Other, xpAward);
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for being revived.");
             }
             else
             {
                 int xpAward = 50;
-                Plugin.XPGained_Other += xpAward;
+                Plugin.IncreaseXPSource(Plugin.XPSource.Other, xpAward);
                 LevelingAPI.AddExperience(xpAward);
                 Plugin.Log.LogInfo($"Awarded {xpAward} XP for reviving someone.");
             }

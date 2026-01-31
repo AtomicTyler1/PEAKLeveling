@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using PhotonPlayer = Photon.Realtime.Player;
 
@@ -38,6 +39,16 @@ namespace Leveling
         public static float XPGained_Luggages = 0f;
         public static float XPGained_Mods = 0f;
         public static float XPGained_Other = 0f;
+
+        public enum XPSource
+        {
+            Winning,
+            Luggages,
+            Badges,
+            Items,
+            Climbing,
+            Other
+        }
 
         private void Awake()
         {
@@ -100,6 +111,56 @@ namespace Leveling
         private void OnApplicationQuit()
         {
             LevelingAPI.SaveLocalData();
+        }
+
+        private static float CalculateMultiplier()
+        {
+            var ascent = Ascents.currentAscent;
+            var multiplier = 1f;
+
+            if (ascent < 0)
+            {
+                return multiplier = 0.8f;
+            }
+
+            return multiplier = Math.Clamp((1 + (ascent * 0.1f)), 1, 2);
+        }
+
+        public static void IncreaseXPSource(XPSource source, float amount, bool ascentMultiplier = true)
+        {
+            if (amount > 0 && amount <= 2000)
+            {
+                if (SceneManager.GetActiveScene().name.ToLower().Contains("airport")) return;
+                if (!SceneManager.GetActiveScene().name.ToLower().Contains("level")) return;
+
+                var multiplier = ascentMultiplier ? CalculateMultiplier() : 1f;
+                amount *= multiplier;
+
+                if (source == XPSource.Winning)
+                {
+                    XPGained_Winning += amount;
+                }
+                else if (source == XPSource.Luggages)
+                {
+                    XPGained_Luggages += amount;
+                }
+                else if (source == XPSource.Badges)
+                {
+                    XPGained_Badges += amount;
+                }
+                else if (source == XPSource.Items)
+                {
+                    XPGained_Items += amount;
+                }
+                else if (source == XPSource.Climbing)
+                {
+                    XPGained_Climbing += amount;
+                }
+                else if (source == XPSource.Other)
+                {
+                    XPGained_Other += amount;
+                }
+            }
         }
 
         private string ParseLabelToFilename(string label)
