@@ -20,7 +20,8 @@ internal class AchievementPatches
         {
             return;
         }
-
+        
+        Plugin.XPGained_Badges += BadgeExp;
         LevelingAPI.AddExperience(BadgeExp);
     }
 }

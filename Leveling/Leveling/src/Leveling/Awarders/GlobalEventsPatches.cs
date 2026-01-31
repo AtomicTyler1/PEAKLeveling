@@ -28,12 +28,14 @@ class GlobalEventsPatches
         if (local.refs.stats.won)
         {
             float xpAward = CalculateEscapeExperience();
+            Plugin.XPGained_Winning += xpAward;
             LevelingAPI.AddExperience(xpAward, false);
             Plugin.Log.LogInfo($"Awarded {xpAward} XP for winning the game.");
         }
         else if (local.refs.stats.somebodyElseWon)
         {
             float xpAward = 50f;
+            Plugin.XPGained_Winning += xpAward;
             LevelingAPI.AddExperience(xpAward, false);
             Plugin.Log.LogInfo($"Awarded {xpAward} XP for teamate winning");
         }

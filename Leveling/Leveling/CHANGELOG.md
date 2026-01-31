@@ -1,3 +1,8 @@
+# v0.2.2 - Major UI addition
+
+- The end of scout report now shows even more details on how you gained the XP!
+- Note that it may seem like the numbers are wrong with ascent multipliers, thats mainly because the winning amount isnt multiplied.
+
 # v0.2.1 - Slight API Change for developers
 
 - The sPEAKer dev has request the addition of gaining experience in the airport as some features are only obtained there.

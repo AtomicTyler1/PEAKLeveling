@@ -25,6 +25,7 @@ public class CampfirePatches
         };
 
         float totalXp = xpToAward + bonusXp;
+        Plugin.XPGained_Other += totalXp;
         LevelingAPI.AddExperience(totalXp);
     }
 }

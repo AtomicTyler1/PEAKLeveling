@@ -30,6 +30,14 @@ namespace Leveling
         public static ConfigEntry<bool> showLevelingUsersOnly;
 
         public static float XPGainedThisRun = 0f;
+        
+        public static float XPGained_Climbing = 0f;
+        public static float XPGained_Items = 0f;
+        public static float XPGained_Winning = 0f;
+        public static float XPGained_Badges = 0f;
+        public static float XPGained_Luggages = 0f;
+        public static float XPGained_Mods = 0f;
+        public static float XPGained_Other = 0f;
 
         private void Awake()
         {
@@ -372,6 +380,13 @@ namespace Leveling
             audioLevelSliderNames.Clear();
             playerNames.Clear();
             Plugin.XPGainedThisRun = 0f;
+            Plugin.XPGained_Winning = 0f;
+            Plugin.XPGained_Luggages = 0f;
+            Plugin.XPGained_Badges = 0f;
+            Plugin.XPGained_Mods = 0f;
+            Plugin.XPGained_Items = 0f;
+            Plugin.XPGained_Climbing = 0f;
+            Plugin.XPGained_Other = 0f;
         }
 
         [HarmonyPostfix]
@@ -383,7 +398,123 @@ namespace Leveling
 
             if (tmp.text.Contains("(+")) { return; }
 
-            tmp.text = $"{tmp.text} (+{Plugin.XPGainedThisRun}XP) (LEVEL {LevelingAPI.Level})";
+            tmp.text = $"{tmp.text} (LEVEL {LevelingAPI.Level})";
+
+            Plugin.XPGained_Mods = Plugin.XPGainedThisRun - Plugin.XPGained_Winning 
+                - Plugin.XPGained_Luggages - Plugin.XPGained_Badges - Plugin.XPGained_Items
+                - Plugin.XPGained_Climbing - Plugin.XPGained_Other;
+
+            var obj = __instance.transform.Find("Panel/Margin");
+            var mtn = obj.Find("Mtn.");
+
+            Color32 color = __instance.transform.Find("Panel/BG").GetComponent<Image>().color;
+
+            var icon = GameObject.Instantiate(mtn.gameObject, obj);
+            icon.transform.localPosition += new Vector3(-310f, 0f, 0f);
+            icon.GetComponent<Image>().color = color;
+            icon.name = "Leveling_Icon";
+
+            var SCOUTING_REPORT = __instance.transform.Find("Panel/Margin/SCOUTING_REPORT");
+            var levelingTitle = GameObject.Instantiate(SCOUTING_REPORT.gameObject, obj);
+            levelingTitle.transform.localPosition = icon.transform.localPosition + new Vector3(0f, -30f, 0f);
+            GameObject.Destroy(levelingTitle.GetComponent<LocalizedText>());
+            levelingTitle.GetComponent<TextMeshProUGUI>().text = "LEVELING";
+            levelingTitle.GetComponent<TextMeshProUGUI>().color = color;
+            levelingTitle.name = "Leveling_Title";
+
+            var ascent = Ascents.currentAscent;
+            var multiplier = 1f;
+
+            if (ascent < 0)
+            {
+                multiplier = 0.8f;
+            }
+            else
+            {
+                multiplier = 1 + (ascent * 0.1f);
+            }
+
+            CreateEndScreenSection(__instance, "Winning", Plugin.XPGained_Winning);
+            CreateEndScreenSection(__instance, "Luggages", Plugin.XPGained_Luggages);
+            CreateEndScreenSection(__instance, "Badges", Plugin.XPGained_Badges);
+            CreateEndScreenSection(__instance, "Items", Plugin.XPGained_Items);
+            CreateEndScreenSection(__instance, "Climbing", Plugin.XPGained_Climbing);
+            CreateEndScreenSection(__instance, "Other", Plugin.XPGained_Other);
+            CreateEndScreenSection(__instance, "Mods", Plugin.XPGained_Mods);
+            CreateEndScreenSection(__instance, "Ascent", multiplier);
+            CreateEndScreenSection(__instance, "Total", Plugin.XPGainedThisRun);
+        }
+
+        private static void CreateEndScreenSection(EndScreen __instance, string name, float value)
+        {
+            if (value <= 0) { return; }
+
+            var margin = __instance.transform.Find("Panel/Margin");
+            var titleRef = margin.Find("Leveling_Title");
+            if (titleRef == null) return;
+
+            float lineSpacing = 24f;
+            float rowWidth = 180f;
+            float entryFontSize = 15f;
+            int index = CountExistingEntries(__instance);
+
+            Color32 themeColor = titleRef.GetComponent<TextMeshProUGUI>().color;
+
+            GameObject entryGroup = new GameObject($"LevelingEntry_{name}");
+            entryGroup.transform.SetParent(margin, false);
+
+            float yPos = -20f - (index * lineSpacing);
+            entryGroup.transform.localPosition = titleRef.transform.localPosition + new Vector3(0f, yPos, 0f);
+
+            GameObject lineObj = new GameObject("Separator");
+            lineObj.transform.SetParent(entryGroup.transform, false);
+            var lineImg = lineObj.AddComponent<Image>();
+            lineImg.color = themeColor;
+
+            RectTransform lineRect = lineObj.GetComponent<RectTransform>();
+            lineRect.sizeDelta = new Vector2(rowWidth, 2f);
+            lineRect.localPosition = new Vector3(0, 10f, 0);
+
+            Action<GameObject, string, TextAlignmentOptions, float> SetupText = (obj, txt, align, xPos) => {
+                if (obj.GetComponent<LocalizedText>()) GameObject.Destroy(obj.GetComponent<LocalizedText>());
+
+                var tmp = obj.GetComponent<TextMeshProUGUI>();
+                tmp.text = txt;
+                tmp.fontSize = entryFontSize;
+                tmp.alignment = align;
+                tmp.color = themeColor;
+                tmp.enableAutoSizing = false;
+
+                RectTransform rect = obj.GetComponent<RectTransform>();
+                rect.sizeDelta = new Vector2(rowWidth / 2f, 20f);
+                obj.transform.localPosition = new Vector3(xPos, 0f, 0f);
+            };
+
+            var labelObj = GameObject.Instantiate(titleRef.gameObject, entryGroup.transform);
+            SetupText(labelObj, name.ToUpper(), TextAlignmentOptions.Left, -(rowWidth / 2f) + (rowWidth / 4f));
+            var amountObj = GameObject.Instantiate(titleRef.gameObject, entryGroup.transform);
+
+            if (name == "Ascent")
+            {
+                SetupText(amountObj, $"{Math.Round(value, 2)}X", TextAlignmentOptions.Right, (rowWidth / 2f) - (rowWidth / 4f));
+                return;
+            }
+
+            SetupText(amountObj, $"+{Math.Round(value, 3)}XP", TextAlignmentOptions.Right, (rowWidth / 2f) - (rowWidth / 4f));
+        }
+
+        private static int CountExistingEntries(EndScreen __instance)
+        {
+            var margin = __instance.transform.Find("Panel/Margin");
+            int count = 0;
+            foreach (Transform child in margin)
+            {
+                if (child.name.StartsWith("LevelingEntry_"))
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         [HarmonyPostfix]

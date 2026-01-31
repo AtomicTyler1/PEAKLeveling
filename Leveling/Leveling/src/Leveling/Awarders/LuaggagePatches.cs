@@ -27,15 +27,19 @@ class LuaggagePatches
         switch (luggage.displayName)
         {
             case "Ancient Luggage":
+                Plugin.XPGained_Luggages += OpenLuggageExp + 20;
                 LevelingAPI.AddExperience(OpenLuggageExp + 20);
                 return;
             case "Explorer's Luggage":
+                Plugin.XPGained_Luggages += OpenLuggageExp + 10;
                 LevelingAPI.AddExperience(OpenLuggageExp + 10);
                 return;
             case "Big Luggage":
+                Plugin.XPGained_Luggages += OpenLuggageExp + 5;
                 LevelingAPI.AddExperience(OpenLuggageExp + 5);
                 return;
             default:
+                Plugin.XPGained_Luggages += OpenLuggageExp;
                 LevelingAPI.AddExperience(OpenLuggageExp);
                 return;
         }
