@@ -1,3 +1,8 @@
+# v0.2.5 - Bug fix
+
+- Removed some code tht would cause an unecessary error.
+- Added some detail to the README saying that levels do nothing.
+
 # v0.2.4 - Bug fix
 
 - (Hopefully) Fixed a bug where the mods section would still show despite it being +0XP

@@ -7,9 +7,15 @@ This mod is in early release. Code may be subject to change and is being activel
 
 > Currently a level takes the experience `level * 100`. This may change to a more complicated formula but right now is not subject to.
 
+## What do levels do?
+
+Levels are simply a way to track your progress after getting all or most of the accolades.
+They do nothing and will always do nothing, this is not supposed to give you an advantage.
+Someone with level 1 is the exact same as someone level 100, one just shows they've practised alot with the mod on.
+
 ## Ways of gaining experience
 
-- Winning a game: **+500xp**
+- Winning a game: **+500xp** (+50xp on top each ascent)
 - Dying, but someone else wins: **+50xp**
 - Using an item: Dynamic, but ranges from **8xp-3xp**
 - Opening Ancient Luggage: **+35xp**
@@ -18,12 +24,50 @@ This mod is in early release. Code may be subject to change and is being activel
 - Opening Regular Luggage: **+15xp**
 - 1 in 20 chance whilst climbing every 15s: **+15xp**
 - Using an ancient statue: **+50xp**
-- Being revived: **+50xp**
-- Reviving someone: **+100xp**
-- Moral boost (with spam prevention): **+20xp**
+- Being revived: **+25xp**
+- Reviving someone: **+50xp**
+- Moral boost (with spam prevention): **+10xp**
 - You die: **+5xp**
 - Getting fed an item: **+10xp**
-- Becoming a zombie (UNTESTED): **+100xp**
+- Becoming a zombie (UNTESTED): **+50xp**
+- Lightning the campfire: **10xp-25xp**
+
+> Ascents give XP multipliers, these are also shown on the passport.
+> Tenderfoot: 0.8x
+> PEAK: 1x
+> Ascent 1: 1.1x
+> Ascent 2: 1.2x...
+
+# How to reset or backup your data
+
+### Using the config
+
+This mod now comes with a config to atomically backup your data!
+Launch the game at least once, then the config will generate.
+A dropdown should appear with the data of the backup for you to load.
+
+> It is recommended you still frequently manually backup your data.
+
+You can also disable the UI that shows up on level and experience gain if you find that annoying.
+
+### Manually
+
+Because the data is persistent across profiles, maybe you want to reset your level and experience because some exploiter found away to give you a lot of experience.
+
+Follow the steps below to restart your progress (Windows version):
+1. Hold the windows key and press R (Or type in run in the search bar)
+2. Copy this into the bar: `%appdata%\..\Local\LandCrab\PEAK\PEAKLeveling\`
+3. Delete `player_stats.sav`
+4. Re-open PEAK!
+
+> This can also be used to backup your save file which is recommended when playing with randoms!
+
+Follow the steps below to backup your progress (Windows version):
+1. Hold the windows key and press R (Or type in run in the search bar)
+2. Copy this into the bar: `%appdata%\..\Local\LandCrab\PEAK\PEAKLeveling\`
+3. Copy `player_stats.sav`
+5. Store the file wherever you want
+6. When you need to replace the file, do the same steps but paste instead of copy the file.
 
 # Contributors:
 
@@ -31,9 +75,10 @@ This mod is in early release. Code may be subject to change and is being activel
 <summary> @atomictyler ( Atomic ) </summary>
 
 - Made the API and Plugin side
+- Created the saving system
 - Created UI Code
 - Did most PUN related networking
-- Made changes to, or created some of the XP Gaining Systens
+- Made changes to, or created some of the XP Gaining Systems
 
 </details>
 

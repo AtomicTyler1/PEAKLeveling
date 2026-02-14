@@ -7,6 +7,12 @@ This mod is in early release. Code may be subject to change and is being activel
 
 > Currently a level takes the experience `level * 100`. This may change to a more complicated formula but right now is not subject to.
 
+## What do levels do?
+
+Levels are simply a way to track your progress after getting all or most of the accolades.
+They do nothing and will always do nothing, this is not supposed to give you an advantage.
+Someone with level 1 is the exact same as someone level 100, one just shows they've practised alot with the mod on.
+
 ## Ways of gaining experience
 
 - Winning a game: **+500xp** (+50xp on top each ascent)
