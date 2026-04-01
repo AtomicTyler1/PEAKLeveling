@@ -1,3 +1,11 @@
+# v0.2.7 - No more XP In custom runs
+
+- XP is now disabled in custom and mini runs, this is not toggleable.
+
+# v0.2.6 - Fix for new game version
+
+- The game changed a reference so the mod just needed a rebuild.
+
 # v0.2.5 - Bug fix
 
 - Removed some code tht would cause an unecessary error.

@@ -96,6 +96,7 @@ namespace Leveling
             {
                 if (SceneManager.GetActiveScene().name.ToLower().Contains("airport") && !allowAwardInAirport) return;
                 if (!SceneManager.GetActiveScene().name.ToLower().Contains("level") && !allowAwardInAirport) return;
+                if (RunSettings._isCustomRun) return;
 
                 // Apply the multiplier if applyAscentMultiplier is true, else default to 1f.
                 var multiplier = applyAscentMultiplier ? CalculateMultiplier() : 1f;

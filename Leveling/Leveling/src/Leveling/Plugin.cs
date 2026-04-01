@@ -444,6 +444,8 @@ namespace Leveling
 
             tmp.text = $"{tmp.text} (LEVEL {LevelingAPI.Level})";
 
+            if (RunSettings._isCustomRun) { return; }
+
             Plugin.XPGained_Mods = Plugin.XPGainedThisRun - Plugin.XPGained_Winning 
                 - Plugin.XPGained_Luggages - Plugin.XPGained_Badges - Plugin.XPGained_Items
                 - Plugin.XPGained_Climbing - Plugin.XPGained_Other;
@@ -568,6 +570,35 @@ namespace Leveling
         public static void BoardingPass_UpdateAscent_Postfix(BoardingPass __instance)
         {
             if (!Plugin.showAscentMultiplier.Value) { return; }
+
+            if (RunSettings._isCustomRun)
+            {
+                GameObject ascent_desc = __instance.transform.Find("BoardingPass/Panel/Ascent/Description").gameObject;
+
+                if (__instance.transform.Find("BoardingPass/Panel/Ascent/Leveling_Warning"))
+                {
+                    GameObject existingWarning = __instance.transform.Find("BoardingPass/Panel/Ascent/Leveling_Warning").gameObject;
+                    existingWarning.SetActive(true);
+                    return;
+                }
+
+                var warning = GameObject.Instantiate(ascent_desc, ascent_desc.transform.parent);
+                warning.name = "Leveling_Warning";
+                warning.transform.localPosition = ascent_desc.transform.localPosition + new Vector3(0f, -30f, 0f);
+
+                warning.GetComponent<TextMeshProUGUI>().text = "You cannot gain XP in custom runs.";
+                warning.GetComponent<TextMeshProUGUI>().color = Color.red;
+                return;
+            }
+            else
+            {
+                Transform warningTransform = __instance.transform.Find("BoardingPass/Panel/Ascent/Leveling_Warning");
+
+                if (warningTransform != null)
+                {
+                    warningTransform.gameObject.SetActive(false);
+                }
+            }
 
             var ascent = __instance._ascentIndex;
             var multiplier = 1f;

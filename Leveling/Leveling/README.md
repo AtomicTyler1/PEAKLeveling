@@ -38,6 +38,8 @@ Someone with level 1 is the exact same as someone level 100, one just shows they
 > Ascent 1: 1.1x
 > Ascent 2: 1.2x...
 
+### YOU CANNOT GAIN XP IN CUSTOM/MINI RUNS!!
+
 # How to reset or backup your data
 
 ### Using the config
