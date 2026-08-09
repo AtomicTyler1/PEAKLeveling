@@ -1,7 +1,4 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
-using System;
-using System.Security.Cryptography;
 using UnityEngine;
 using PhotonPlayer = Photon.Realtime.Player;
 

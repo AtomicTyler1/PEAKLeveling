@@ -1,5 +1,4 @@
-﻿using DG.Tweening.Core;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 
 namespace Leveling.Awarders;

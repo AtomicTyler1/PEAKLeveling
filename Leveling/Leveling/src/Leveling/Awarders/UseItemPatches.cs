@@ -33,7 +33,9 @@ internal class UseItemPatches
     {
         "Faerie Lantern",
         "Lantern",
-        "Torch"
+        "Torch",
+        "Flare",
+        "Candlestick"
     };
 
     private static readonly Dictionary<string, float> itemCooldowns = new Dictionary<string, float>();

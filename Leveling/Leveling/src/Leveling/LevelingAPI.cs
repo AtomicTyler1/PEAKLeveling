@@ -1,6 +1,4 @@
-﻿using Photon.Realtime;
-using Photon.Pun;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PhotonPlayer = Photon.Realtime.Player;
 using System;
 using Leveling.Misc;

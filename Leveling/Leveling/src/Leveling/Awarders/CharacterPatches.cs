@@ -1,10 +1,5 @@
 ﻿using HarmonyLib;
-using Photon.Pun.Demo.PunBasics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 namespace Leveling.Awarders
@@ -105,7 +100,7 @@ namespace Leveling.Awarders
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(Character), nameof(Character.RPCA_Revive))]
+        [HarmonyPatch(typeof(Character), nameof(Character.RPCA_ReviveAtPosition))]
         static void Character_RPCA_Revive_Postfix(Character __instance)
         {
             if (__instance.IsLocal)

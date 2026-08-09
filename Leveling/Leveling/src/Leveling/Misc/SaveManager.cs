@@ -128,7 +128,7 @@ namespace Leveling.Misc
                 string json = Encoding.UTF8.GetString(jsonBytes);
 
                 PlayerSaveData loadedData = JsonConvert.DeserializeObject<PlayerSaveData>(json);
-                Plugin.Log.LogInfo($"Loaded data (obfuscated) from: {SaveFilePath} (Lvl {loadedData.Level}, Exp {loadedData.Experience})");
+                Plugin.Log.LogInfo($"Loaded data from: {SaveFilePath} (Lvl {loadedData.Level}, Exp {loadedData.Experience})");
                 return loadedData;
             }
             catch (Exception ex)

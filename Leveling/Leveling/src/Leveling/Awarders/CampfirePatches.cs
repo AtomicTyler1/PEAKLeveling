@@ -1,8 +1,4 @@
 ﻿using HarmonyLib;
-using Photon.Pun.Demo.PunBasics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Leveling.Awarders;
 

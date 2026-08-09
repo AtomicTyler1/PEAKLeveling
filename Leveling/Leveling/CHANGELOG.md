@@ -1,3 +1,18 @@
+# v0.2.8 - Fix and new items
+
+- The mod is fixed for the new update
+- Some new items have been cooldowned
+
+<details>
+
+<summary>[SPOILERS] Cooldowned items</summary>
+
+## Cooldowns [New]
+- Flare
+- Candlestick
+
+</details>
+
 # v0.2.7 - No more XP In custom runs
 
 - XP is now disabled in custom and mini runs, this is not toggleable.
