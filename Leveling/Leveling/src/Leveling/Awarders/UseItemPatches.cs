@@ -25,7 +25,8 @@ internal class UseItemPatches
         "Torn Page",
         "Scroll",
         "Guidebook",
-        "Parasol"
+        "Parasol",
+        "AMULET_CLONE"
     };
 
     // Names in here will have a 30s cooldown each time they are used between getting experience

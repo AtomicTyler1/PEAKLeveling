@@ -1,3 +1,7 @@
+# v0.2.9 - Fix inifnite XP bug
+
+- The clone amulet is now blacklisted due to an infinite XP bug.
+
 # v0.2.8 - Fix and new items
 
 - The mod is fixed for the new update
